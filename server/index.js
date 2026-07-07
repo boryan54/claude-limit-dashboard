@@ -23,8 +23,8 @@ app.get('/api/limits', async (_req, res) => {
 
 app.get('/api/usage', async (req, res) => {
   try {
-    const { from, to } = req.query;
-    res.json(await aggregate({ from: from || null, to: to || null }));
+    const { from, to, granularity } = req.query;
+    res.json(await aggregate({ from: from || null, to: to || null, granularity: granularity || null }));
   } catch (e) {
     res.status(500).json({ error: String(e) });
   }

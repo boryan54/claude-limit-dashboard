@@ -31,8 +31,10 @@ export default function App() {
   const loadUsage = useCallback(async (r) => {
     setLoading(true);
     setErr(null);
+    // Один день (например «Сегодня») — почасовая разбивка.
+    const granularity = r.from && r.to && r.from === r.to ? 'hour' : 'day';
     try {
-      setUsage(await fetchUsage({ from: r.from, to: r.to }));
+      setUsage(await fetchUsage({ from: r.from, to: r.to, granularity }));
     } catch (e) {
       setErr(String(e));
     } finally {

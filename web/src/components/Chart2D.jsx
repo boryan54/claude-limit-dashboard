@@ -33,8 +33,9 @@ export default function Chart2D({ rows, models, max, metric, mode }) {
   const band = plotW / Math.max(1, N);
   const yFor = (v) => y0 - (v / max) * plotH;
   const xCenter = (i) => x0 + band * i + band / 2;
-  const barW = Math.min(40, band * 0.72);
-  const xStep = Math.max(1, Math.ceil(N / (mode === 'line' ? 8 : 12)));
+  // Широкие столбцы: заполняют полосу, но с разумным потолком, чтобы при 1–2 барах не растягивались бесконечно.
+  const barW = Math.min(band * 0.74, 140);
+  const xStep = Math.max(1, Math.ceil(N / (mode === 'line' ? 8 : 16)));
 
   function showBar(e, part, r) {
     const rect = ref.current.getBoundingClientRect();
@@ -86,7 +87,7 @@ export default function Chart2D({ rows, models, max, metric, mode }) {
         {rows.map((r, i) =>
           i % xStep === 0 || i === N - 1 ? (
             <text key={r.date} x={xCenter(i)} y={y0 + 20} textAnchor="middle" className="svg-date">
-              {r.date.slice(5)}
+              {r.label}
             </text>
           ) : null
         )}

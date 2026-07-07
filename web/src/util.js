@@ -92,7 +92,7 @@ export function prepSeries(daily, metric) {
       total += v;
       return { model: m, value: v };
     });
-    return { date: d.date, total, parts };
+    return { date: d.date, label: d.label || (d.date || '').slice(5), total, parts };
   });
   const max = Math.max(1, ...rows.map((r) => r.total));
   return { models, rows, max };

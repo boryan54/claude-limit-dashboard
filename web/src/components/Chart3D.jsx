@@ -32,7 +32,7 @@ function buildPlot(group, geom, rows, models, max, metric) {
 
   const N = rows.length;
   const slot = WORLD_W / N;
-  const barW = Math.max(0.14, Math.min(1.1, slot - 0.35));
+  const barW = Math.max(0.14, Math.min(slot * 0.78, 2.2));
 
   const matByModel = new Map();
   models.forEach((m, i) => {
@@ -80,7 +80,7 @@ function buildPlot(group, geom, rows, models, max, metric) {
       y += h + 0.02;
     });
     if (ci % step === 0 || ci === N - 1) {
-      const lbl = makeLabel(r.date.slice(5), 'c2d-date');
+      const lbl = makeLabel(r.label, 'c2d-date');
       lbl.position.set(x, -0.4, BAR_DEPTH / 2 + 0.1);
       group.add(lbl);
     }

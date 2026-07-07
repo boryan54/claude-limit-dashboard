@@ -4,10 +4,11 @@ export async function fetchLimits() {
   return r.json();
 }
 
-export async function fetchUsage({ from, to } = {}) {
+export async function fetchUsage({ from, to, granularity } = {}) {
   const p = new URLSearchParams();
   if (from) p.set('from', from);
   if (to) p.set('to', to);
+  if (granularity) p.set('granularity', granularity);
   const r = await fetch('/api/usage?' + p.toString());
   if (!r.ok) throw new Error('usage ' + r.status);
   return r.json();

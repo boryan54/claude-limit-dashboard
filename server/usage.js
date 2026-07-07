@@ -125,13 +125,16 @@ function totalTokens(b) {
 
 /**
  * Агрегация за диапазон [from, to] (включительно, YYYY-MM-DD). Пустые границы = без ограничения.
+ * granularity: 'day' (по умолчанию) | 'hour' — почасовая разбивка (для одного дня).
  */
-export async function aggregate({ from, to } = {}) {
+export async function aggregate({ from, to, granularity } = {}) {
   await refresh();
+  const hourly = granularity === 'hour';
 
   const byModel = new Map();
   const byProject = new Map();
-  const dailyMap = new Map(); // day -> Map(model -> bucket)
+  const seriesMap = new Map(); // bucketKey -> Map(model -> bucket)
+  if (hourly) for (let h = 0; h < 24; h++) seriesMap.set(String(h).padStart(2, '0'), new Map());
   const seen = new Set();
   const totals = emptyBucket();
 
@@ -151,8 +154,9 @@ export async function aggregate({ from, to } = {}) {
       if (!byProject.has(r.project)) byProject.set(r.project, emptyBucket());
       addInto(byProject.get(r.project), r);
 
-      if (!dailyMap.has(r.day)) dailyMap.set(r.day, new Map());
-      const dm = dailyMap.get(r.day);
+      const key = hourly ? (r.ts ? r.ts.slice(11, 13) : '00') : r.day;
+      if (!seriesMap.has(key)) seriesMap.set(key, new Map());
+      const dm = seriesMap.get(key);
       if (!dm.has(r.model)) dm.set(r.model, emptyBucket());
       addInto(dm.get(r.model), r);
 
@@ -168,18 +172,18 @@ export async function aggregate({ from, to } = {}) {
     .map(([project, b]) => ({ project, ...b, tokens: totalTokens(b) }))
     .sort((a, b) => b.tokens - a.tokens);
 
-  const daily = [...dailyMap.entries()]
+  const daily = [...seriesMap.entries()]
     .sort((a, b) => (a[0] < b[0] ? -1 : 1))
-    .map(([date, dm]) => {
+    .map(([key, dm]) => {
       const perModel = {};
       for (const [model, b] of dm.entries()) {
         perModel[model] = { tokens: totalTokens(b), cost: estimateCost(model, b) };
       }
-      return { date, perModel };
+      return { date: hourly ? `${key}:00` : key, label: hourly ? `${key}:00` : key.slice(5), perModel };
     });
 
   return {
-    range: { from: from || null, to: to || null },
+    range: { from: from || null, to: to || null, granularity: hourly ? 'hour' : 'day' },
     totals: { ...totals, tokens: totalTokens(totals) },
     byModel: byModelArr,
     byProject: byProjectArr,
