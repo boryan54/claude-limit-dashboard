@@ -1,5 +1,15 @@
 // Форматирование и палитра моделей.
 
+const LOCALES = { ru: 'ru-RU', en: 'en-US', de: 'de-DE', fr: 'fr-FR', zh: 'zh-CN' };
+const SOON = { ru: 'скоро', en: 'soon', de: 'bald', fr: 'bientôt', zh: '即将' };
+let LANG = 'ru';
+export function setLang(l) {
+  if (LOCALES[l]) LANG = l;
+}
+function locale() {
+  return LOCALES[LANG] || 'ru-RU';
+}
+
 export function fmtTokens(n) {
   if (n == null) return '—';
   if (n >= 1e9) return (n / 1e9).toFixed(2) + 'B';
@@ -16,7 +26,7 @@ export function fmtUsd(n) {
 }
 
 export function fmtInt(n) {
-  return (n ?? 0).toLocaleString('ru-RU');
+  return (n ?? 0).toLocaleString(locale());
 }
 
 // Цвет по проценту — неоновая шкала (зелёный → циан → жёлтый → красный).
@@ -88,17 +98,16 @@ export function prepSeries(daily, metric) {
   return { models, rows, max };
 }
 
-// «сброс через …» из ISO-даты.
+// «сброс через …» из ISO-даты — локализуется через Intl.RelativeTimeFormat.
 export function untilReset(iso) {
   if (!iso) return null;
   const ms = new Date(iso).getTime() - Date.now();
   if (isNaN(ms)) return null;
-  if (ms <= 0) return 'скоро';
+  if (ms <= 0) return SOON[LANG] || SOON.ru;
+  const rtf = new Intl.RelativeTimeFormat(locale(), { numeric: 'always' });
   const min = Math.round(ms / 60000);
-  if (min < 60) return `через ${min} мин`;
-  const h = Math.floor(min / 60);
-  const m = min % 60;
-  if (h < 24) return `через ${h} ч ${m} мин`;
-  const d = Math.floor(h / 24);
-  return `через ${d} дн ${h % 24} ч`;
+  if (min < 60) return rtf.format(min, 'minute');
+  const h = Math.round(min / 60);
+  if (h < 24) return rtf.format(h, 'hour');
+  return rtf.format(Math.round(h / 24), 'day');
 }

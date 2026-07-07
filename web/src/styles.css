@@ -664,6 +664,34 @@ tbody tr:hover {
   opacity: 0.5;
   cursor: default;
 }
+.lang-select {
+  appearance: none;
+  border: 1px solid var(--glass-border);
+  background: var(--glass);
+  color: var(--text);
+  padding: 8px 30px 8px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-family: var(--f-body);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  backdrop-filter: blur(14px);
+  background-image: linear-gradient(45deg, transparent 50%, var(--neon) 50%),
+    linear-gradient(135deg, var(--neon) 50%, transparent 50%);
+  background-position: right 14px center, right 9px center;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+  transition: all 0.2s;
+}
+.lang-select:hover {
+  border-color: var(--neon);
+  box-shadow: 0 0 14px rgba(34, 230, 255, 0.25);
+}
+.lang-select option {
+  background: #0a1220;
+  color: var(--text);
+}
 
 /* ─── Переключатель видов графика ───────────────────────── */
 .chart-controls {

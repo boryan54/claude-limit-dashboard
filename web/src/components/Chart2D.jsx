@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { modelColor, shortModel, fmtTokens, fmtUsd } from '../util.js';
+import { useI18n } from '../i18n.jsx';
 
 const H = 320;
 const PAD_L = 66;
@@ -9,6 +10,7 @@ const PAD_B = 36;
 const TICKS = [0, 0.25, 0.5, 0.75, 1];
 
 export default function Chart2D({ rows, models, max, metric, mode }) {
+  const { t } = useI18n();
   const ref = useRef(null);
   const [w, setW] = useState(760);
   const [tip, setTip] = useState(null);
@@ -41,7 +43,7 @@ export default function Chart2D({ rows, models, max, metric, mode }) {
       top: e.clientY - rect.top,
       title: shortModel(part.model),
       date: r.date,
-      lines: [`${fmt(part.value)}  ·  день ${fmt(r.total)}`],
+      lines: [`${fmt(part.value)}  ·  ${t('chart.day')} ${fmt(r.total)}`],
     });
   }
   function showDay(e, r) {
@@ -51,7 +53,7 @@ export default function Chart2D({ rows, models, max, metric, mode }) {
       .sort((a, b) => b.value - a.value)
       .slice(0, 6)
       .map((p) => `${shortModel(p.model)}: ${fmt(p.value)}`);
-    setTip({ left: e.clientX - rect.left, top: e.clientY - rect.top, title: `Итог ${fmt(r.total)}`, date: r.date, lines: parts });
+    setTip({ left: e.clientX - rect.left, top: e.clientY - rect.top, title: `${t('chart.total')} ${fmt(r.total)}`, date: r.date, lines: parts });
   }
 
   return (

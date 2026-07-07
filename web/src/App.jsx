@@ -5,10 +5,12 @@ import LimitsPanel from './components/LimitsPanel.jsx';
 import RangePicker from './components/RangePicker.jsx';
 import DailyChart from './components/DailyChart.jsx';
 import StatTable from './components/StatTable.jsx';
+import { useI18n, LanguageSelect } from './i18n.jsx';
 
 const AUTO_SECONDS = 600; // автообновление статистики каждые 10 минут
 
 export default function App() {
+  const { t } = useI18n();
   const [limits, setLimits] = useState(null);
   const [range, setRange] = useState({ preset: '30d', from: agoYmd(29), to: todayYmd() });
   const [usage, setUsage] = useState(null);
@@ -86,24 +88,25 @@ export default function App() {
       <header className="topbar">
         <div>
           <h1>
-            <b>Claude Code</b> · лимиты и статистика
+            <b>Claude Code</b> · {t('app.suffix')}
           </h1>
           <p className="sub">
-            Локальный дашборд · {usage ? `${fmtInt(usage.files)} файлов транскриптов` : '…'}
+            {t('app.subtitle')} · {usage ? t('app.files', { n: fmtInt(usage.files) }) : '…'}
           </p>
         </div>
         <div className="header-actions">
           <span className="status-chip">
             <span className="dot" />
-            {source === 'live' ? 'API online' : source === 'cache' ? 'из кэша' : 'нет связи'}
+            {source === 'live' ? t('status.live') : source === 'cache' ? t('status.cache') : t('status.offline')}
           </span>
-          <span className="status-chip timer" title="До автообновления статистики">
+          <span className="status-chip timer" title={t('timer.title')}>
             <span className="timer-ico">⟳</span>
             {mmss(secondsLeft)}
           </span>
-          <button className="refresh-btn" onClick={doRefresh} disabled={loading} title="Обновить сейчас">
-            {loading ? '…' : '⟳'} Обновить
+          <button className="refresh-btn" onClick={doRefresh} disabled={loading} title={t('btn.refreshTitle')}>
+            {loading ? '…' : '⟳'} {t('btn.refresh')}
           </button>
+          <LanguageSelect />
         </div>
       </header>
 
@@ -115,8 +118,8 @@ export default function App() {
 
       <section className="panel">
         <div className="panel-head">
-          <h2>Статистика использования</h2>
-          <span className="muted small">$ — оценка эквивалентной стоимости по API-прайсу</span>
+          <h2>{t('section.usage')}</h2>
+          <span className="muted small">{t('usage.costNote')}</span>
         </div>
         <RangePicker
           preset={range.preset}
@@ -126,25 +129,31 @@ export default function App() {
           onChange={(r) => setRange(r)}
           onRefresh={doRefresh}
         />
-        {err && <p className="error">Ошибка: {err}</p>}
+        {err && (
+          <p className="error">
+            {t('error')}: {err}
+          </p>
+        )}
         {totals && (
           <div className="totals">
-            <Stat label="Всего токенов" value={fmtTokens(totals.tokens)} />
-            <Stat label="Сообщений" value={fmtInt(totals.messages)} />
-            <Stat label="Input" value={fmtTokens(totals.input)} />
-            <Stat label="Output" value={fmtTokens(totals.output)} />
-            <Stat label="Cache read" value={fmtTokens(totals.cacheRead)} />
-            <Stat label="Стоимость (оценка)" value={fmtUsd(totals.cost)} accent />
+            <Stat label={t('stat.totalTokens')} value={fmtTokens(totals.tokens)} />
+            <Stat label={t('stat.messages')} value={fmtInt(totals.messages)} />
+            <Stat label={t('stat.input')} value={fmtTokens(totals.input)} />
+            <Stat label={t('stat.output')} value={fmtTokens(totals.output)} />
+            <Stat label={t('stat.cacheRead')} value={fmtTokens(totals.cacheRead)} />
+            <Stat label={t('stat.cost')} value={fmtUsd(totals.cost)} accent />
           </div>
         )}
       </section>
 
       <DailyChart daily={usage?.daily || []} />
-      <StatTable title="По моделям" rows={modelRows} keyLabel="Модель" isModel />
-      <StatTable title="По проектам" rows={projectRows} keyLabel="Проект" />
+      <StatTable title={t('title.byModel')} rows={modelRows} keyLabel={t('th.model')} isModel />
+      <StatTable title={t('title.byProject')} rows={projectRows} keyLabel={t('th.project')} />
 
       <footer className="foot">
-        Данные читаются из <code>~/.claude/projects</code> и эндпоинта oauth/usage. Ничего не отправляется вовне.
+        {t('footer.pre')}
+        <code>~/.claude/projects</code>
+        {t('footer.post')}
       </footer>
     </div>
   );

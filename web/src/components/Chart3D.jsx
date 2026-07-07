@@ -5,6 +5,7 @@ import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
 import { CSS2DRenderer, CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
 import { modelColor, shortModel, fmtTokens, fmtUsd } from '../util.js';
+import { useI18n } from '../i18n.jsx';
 
 const WORLD_W = 16;
 const WORLD_H = 6;
@@ -87,6 +88,7 @@ function buildPlot(group, geom, rows, models, max, metric) {
 }
 
 export default function Chart3D({ rows, models, max, metric }) {
+  const { t } = useI18n();
   const wrapRef = useRef(null);
   const apiRef = useRef(null);
   const [tip, setTip] = useState(null);
@@ -226,7 +228,7 @@ export default function Chart3D({ rows, models, max, metric }) {
         <div className="chart-tip" style={{ left: tip.left, top: tip.top }}>
           <b>{shortModel(tip.model)}</b> · {tip.date}
           <br />
-          {fmt(tip.value)} <span className="tip-total">/ день {fmt(tip.total)}</span>
+          {fmt(tip.value)} <span className="tip-total">/ {t('chart.day')} {fmt(tip.total)}</span>
         </div>
       )}
     </div>

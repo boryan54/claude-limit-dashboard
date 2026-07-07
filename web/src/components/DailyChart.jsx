@@ -2,14 +2,16 @@ import React, { useMemo, useState } from 'react';
 import Chart3D from './Chart3D.jsx';
 import Chart2D from './Chart2D.jsx';
 import { prepSeries, modelColor, shortModel } from '../util.js';
+import { useI18n } from '../i18n.jsx';
 
 const VIEWS = [
-  { key: '3d', label: '3D' },
-  { key: 'bars', label: 'Столбцы' },
-  { key: 'line', label: 'Линии' },
+  { key: '3d', tkey: null, label: '3D' },
+  { key: 'bars', tkey: 'chart.viewBars' },
+  { key: 'line', tkey: 'chart.viewLine' },
 ];
 
 export default function DailyChart({ daily }) {
+  const { t } = useI18n();
   const [metric, setMetric] = useState('tokens');
   const [view, setView] = useState('3d');
 
@@ -19,18 +21,18 @@ export default function DailyChart({ daily }) {
   return (
     <section className="panel">
       <div className="panel-head">
-        <h2>По дням</h2>
+        <h2>{t('chart.heading')}</h2>
         <div className="chart-controls">
           <div className="seg-toggle">
             {VIEWS.map((v) => (
               <button key={v.key} className={view === v.key ? 'active' : ''} onClick={() => setView(v.key)}>
-                {v.label}
+                {v.tkey ? t(v.tkey) : v.label}
               </button>
             ))}
           </div>
           <div className="seg-toggle">
             <button className={metric === 'tokens' ? 'active' : ''} onClick={() => setMetric('tokens')}>
-              Токены
+              {t('chart.tokens')}
             </button>
             <button className={metric === 'cost' ? 'active' : ''} onClick={() => setMetric('cost')}>
               $
@@ -40,7 +42,7 @@ export default function DailyChart({ daily }) {
       </div>
 
       {!hasData ? (
-        <div className="chart-empty-box">нет данных за период</div>
+        <div className="chart-empty-box">{t('chart.empty')}</div>
       ) : view === '3d' ? (
         <Chart3D rows={rows} models={models} max={max} metric={metric} />
       ) : (

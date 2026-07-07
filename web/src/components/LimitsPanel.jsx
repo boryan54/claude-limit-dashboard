@@ -1,14 +1,15 @@
 import React from 'react';
 import { pctColor, untilReset } from '../util.js';
+import { useI18n } from '../i18n.jsx';
 
-function labelFor(l) {
-  if (l.kind === 'session') return 'Текущая сессия · 5 ч';
-  if (l.kind === 'weekly_all') return 'Неделя · все модели';
+function labelFor(l, t) {
+  if (l.kind === 'session') return t('limit.session');
+  if (l.kind === 'weekly_all') return t('limit.weeklyAll');
   if (l.kind === 'weekly_scoped') {
     const name = l.scope?.model?.display_name || l.scope?.surface || 'scoped';
-    return `Неделя · ${name}`;
+    return t('limit.weeklyScoped', { name });
   }
-  return l.kind || l.group || 'лимит';
+  return l.kind || l.group || 'limit';
 }
 
 function Bar({ label, pct, resetsAt, sub }) {
@@ -38,11 +39,15 @@ function Bar({ label, pct, resetsAt, sub }) {
 }
 
 export default function LimitsPanel({ limits, source, error }) {
+  const { t } = useI18n();
+
   if (error || !limits) {
     return (
       <section className="panel">
-        <h2>Лимиты</h2>
-        <p className="muted">Нет данных о лимитах {error ? `(${error})` : ''}.</p>
+        <h2>{t('limits.heading')}</h2>
+        <p className="muted">
+          {t('limits.none')} {error ? `(${error})` : ''}
+        </p>
       </section>
     );
   }
@@ -61,26 +66,24 @@ export default function LimitsPanel({ limits, source, error }) {
   return (
     <section className="panel">
       <div className="panel-head">
-        <h2>Лимиты подписки</h2>
+        <h2>{t('limits.title')}</h2>
         <span className={'tag ' + (source === 'live' ? 'tag-live' : 'tag-cache')}>
-          {source === 'live' ? 'live' : source === 'cache' ? 'из кэша' : '—'}
+          {source === 'live' ? t('tag.live') : source === 'cache' ? t('tag.cache') : '—'}
         </span>
       </div>
       <div className="limits-grid">
         {bars.map((l, i) => (
-          <Bar key={i} label={labelFor(l)} pct={l.percent ?? l.utilization ?? 0} resetsAt={l.resets_at} />
+          <Bar key={i} label={labelFor(l, t)} pct={l.percent ?? l.utilization ?? 0} resetsAt={l.resets_at} />
         ))}
         {extra?.is_enabled && (
           <Bar
-            label="Extra usage · месяц"
+            label={t('limit.extra')}
             pct={extra.utilization ?? 0}
             resetsAt={null}
-            sub={extra.monthly_limit ? `лимит $${(extra.monthly_limit / 100).toFixed(2)}` : null}
+            sub={extra.monthly_limit ? t('limit.extraLimit', { x: (extra.monthly_limit / 100).toFixed(2) }) : null}
           />
         )}
-        {spend?.enabled && (
-          <Bar label="Spend" pct={spend.percent ?? 0} resetsAt={null} />
-        )}
+        {spend?.enabled && <Bar label={t('limit.spend')} pct={spend.percent ?? 0} resetsAt={null} />}
       </div>
     </section>
   );

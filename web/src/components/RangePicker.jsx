@@ -1,4 +1,5 @@
 import React from 'react';
+import { useI18n } from '../i18n.jsx';
 
 function ymd(d) {
   return d.toISOString().slice(0, 10);
@@ -10,13 +11,14 @@ function daysAgo(n) {
 }
 
 const PRESETS = [
-  { key: 'today', label: 'Сегодня', range: () => ({ from: ymd(new Date()), to: ymd(new Date()) }) },
-  { key: '7d', label: '7 дней', range: () => ({ from: daysAgo(6), to: ymd(new Date()) }) },
-  { key: '30d', label: '30 дней', range: () => ({ from: daysAgo(29), to: ymd(new Date()) }) },
-  { key: 'all', label: 'Всё время', range: () => ({ from: '', to: '' }) },
+  { key: 'today', tkey: 'range.today', range: () => ({ from: ymd(new Date()), to: ymd(new Date()) }) },
+  { key: '7d', tkey: 'range.7d', range: () => ({ from: daysAgo(6), to: ymd(new Date()) }) },
+  { key: '30d', tkey: 'range.30d', range: () => ({ from: daysAgo(29), to: ymd(new Date()) }) },
+  { key: 'all', tkey: 'range.all', range: () => ({ from: '', to: '' }) },
 ];
 
 export default function RangePicker({ preset, from, to, onChange, onRefresh, loading }) {
+  const { t } = useI18n();
   return (
     <div className="range">
       <div className="presets">
@@ -26,7 +28,7 @@ export default function RangePicker({ preset, from, to, onChange, onRefresh, loa
             className={'preset' + (preset === p.key ? ' active' : '')}
             onClick={() => onChange({ preset: p.key, ...p.range() })}
           >
-            {p.label}
+            {t(p.tkey)}
           </button>
         ))}
       </div>
@@ -45,7 +47,7 @@ export default function RangePicker({ preset, from, to, onChange, onRefresh, loa
           onChange={(e) => onChange({ preset: 'custom', from, to: e.target.value })}
         />
         <button className="refresh" onClick={onRefresh} disabled={loading}>
-          {loading ? '…' : '⟳ Обновить'}
+          {loading ? '…' : `⟳ ${t('btn.refresh')}`}
         </button>
       </div>
     </div>

@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { fmtTokens, fmtInt, fmtUsd, modelColor, shortModel } from '../util.js';
+import { useI18n } from '../i18n.jsx';
 
 // rows: [{ key, input, output, cacheWrite, cacheRead, tokens, messages, cost }]
 export default function StatTable({ title, rows, keyLabel, isModel }) {
+  const { t } = useI18n();
   const [sort, setSort] = useState({ col: 'tokens', dir: -1 });
 
   const sorted = [...rows].sort((a, b) => {
@@ -31,13 +33,13 @@ export default function StatTable({ title, rows, keyLabel, isModel }) {
           <thead>
             <tr>
               {th('key', keyLabel)}
-              {th('messages', 'Сообщ.', 'num')}
-              {th('input', 'Input', 'num')}
-              {th('output', 'Output', 'num')}
-              {th('cacheWrite', 'Cache W', 'num')}
-              {th('cacheRead', 'Cache R', 'num')}
-              {th('tokens', 'Всего', 'num')}
-              {th('cost', '$ (оценка)', 'num')}
+              {th('messages', t('th.messages'), 'num')}
+              {th('input', t('th.input'), 'num')}
+              {th('output', t('th.output'), 'num')}
+              {th('cacheWrite', t('th.cacheW'), 'num')}
+              {th('cacheRead', t('th.cacheR'), 'num')}
+              {th('tokens', t('th.total'), 'num')}
+              {th('cost', t('th.costEst'), 'num')}
             </tr>
           </thead>
           <tbody>
@@ -64,7 +66,7 @@ export default function StatTable({ title, rows, keyLabel, isModel }) {
             {!sorted.length && (
               <tr>
                 <td colSpan={8} className="muted">
-                  Нет данных.
+                  {t('table.empty')}
                 </td>
               </tr>
             )}
