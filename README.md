@@ -2,6 +2,13 @@
 
 **Русский** · [English](README.en.md)
 
+[![CI](https://github.com/boryan54/claude-limit-dashboard/actions/workflows/ci.yml/badge.svg)](https://github.com/boryan54/claude-limit-dashboard/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-22e6ff.svg)](LICENSE)
+![React](https://img.shields.io/badge/React-18-61dafb?logo=react&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-6-646cff?logo=vite&logoColor=white)
+![three.js](https://img.shields.io/badge/three.js-WebGL-000000?logo=three.js&logoColor=white)
+![Node](https://img.shields.io/badge/Node-%E2%89%A518-339933?logo=node.js&logoColor=white)
+
 Локальный веб-дашборд: живые лимиты подписки Claude Code и историческая статистика
 использования по моделям и проектам, с оценкой стоимости и 3D/2D-графиками.
 
