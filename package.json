@@ -2,6 +2,7 @@
   "name": "claude-limit-dashboard",
   "version": "1.0.0",
   "private": true,
+  "license": "MIT",
   "type": "module",
   "description": "Локальный дашборд лимитов и статистики использования Claude Code",
   "scripts": {
