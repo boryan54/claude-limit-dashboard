@@ -12,7 +12,7 @@ const AUTO_SECONDS = 600; // автообновление статистики �
 export default function App() {
   const { t } = useI18n();
   const [limits, setLimits] = useState(null);
-  const [range, setRange] = useState({ preset: '30d', from: agoYmd(29), to: todayYmd() });
+  const [range, setRange] = useState({ preset: 'today', from: todayYmd(), to: todayYmd() });
   const [usage, setUsage] = useState(null);
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState(null);

@@ -303,6 +303,15 @@ code {
   font-variant-numeric: tabular-nums;
   color: #bfe9ff;
 }
+.limit-reset-abs {
+  margin-top: 4px;
+  text-align: right;
+  font-family: ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: var(--muted);
+}
 .tag {
   font-size: 11px;
   padding: 3px 10px;

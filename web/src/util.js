@@ -98,6 +98,20 @@ export function prepSeries(daily, metric) {
   return { models, rows, max };
 }
 
+// Точная дата и время из ISO — локализованно (напр. «03.08.2026, 12:44»).
+export function fmtDateTime(iso) {
+  if (!iso) return null;
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return null;
+  return new Intl.DateTimeFormat(locale(), {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  }).format(d);
+}
+
 // «сброс через …» из ISO-даты — локализуется через Intl.RelativeTimeFormat.
 export function untilReset(iso) {
   if (!iso) return null;

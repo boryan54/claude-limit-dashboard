@@ -13,7 +13,7 @@ const VIEWS = [
 export default function DailyChart({ daily }) {
   const { t } = useI18n();
   const [metric, setMetric] = useState('tokens');
-  const [view, setView] = useState('3d');
+  const [view, setView] = useState('line');
 
   const { models, rows, max } = useMemo(() => prepSeries(daily || [], metric), [daily, metric]);
   const hasData = rows.length > 0;

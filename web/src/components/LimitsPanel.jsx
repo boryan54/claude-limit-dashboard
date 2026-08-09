@@ -1,5 +1,5 @@
 import React from 'react';
-import { pctColor, untilReset } from '../util.js';
+import { pctColor, untilReset, fmtDateTime } from '../util.js';
 import { useI18n } from '../i18n.jsx';
 
 function labelFor(l, t) {
@@ -16,6 +16,7 @@ function Bar({ label, pct, resetsAt, sub }) {
   const p = Math.max(0, Math.min(100, Math.round(pct)));
   const color = pctColor(p);
   const reset = untilReset(resetsAt);
+  const resetAbs = fmtDateTime(resetsAt);
   return (
     <div className="limit-card">
       <div className="limit-head">
@@ -34,6 +35,7 @@ function Bar({ label, pct, resetsAt, sub }) {
         {sub && <span>{sub}</span>}
         {reset && <span className="limit-reset">⟳ {reset}</span>}
       </div>
+      {resetAbs && <div className="limit-reset-abs">{resetAbs}</div>}
     </div>
   );
 }
